@@ -10,7 +10,7 @@ const server = new webdav.WebDAVServer({
 (async () => {
     try {
         server.setFileSystemSync("/", new webdav.PhysicalFileSystem(`/`, new VFS('', IPFS_API)));
-        server.start(() => console.log('READY'));
+        server.start(() => console.log(`WebDAV IPFS running on 127.0.0.1:${WEBDAV_PORT}`));
     } catch (error) {
         console.log(error)
         process.exit()
