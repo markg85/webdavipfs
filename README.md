@@ -12,12 +12,19 @@ This project is a proof of concept (POC) to demonstrate IPFS over WebDAV. With t
 | *testcase* | Windows | Linux (KDE) | Android (Solid Explorer) |
 | ---------- | ------- | ----- | --------------- |
 | File opens |:cry::cry:|:cry::cry:|:smile::smile:|
-| Streaming  |:angry::angry:|:angry::angry:|::unicorn_face::smile:|
+| Streaming  |:angry::angry:|:angry::angry:|:unicorn::smile:|
 | Browsing |:cry::cry:|:smile::smile:|:cry::cry:|
 | Metadata works |:smile::smile:|:smile::smile:|:smile::smile:|
 | Write prevents |:angry::angry:|:angry::angry:|:angry::angry:|
 | Copy |:cry::cry:|:smile::smile:|:smile::smile:|
 | Placeholder readme|:smile::smile:|:smile::smile:|:smile::smile:|
+
+Legend:
+You see 2 smiles in each column. First smile: my webdav implementation. Second smile, the rclone webdav implementation.
+:angry: = Not working at all. No clear path to fix it either.
+:cry: = Works in specific condition or needs manual steps. See note for specific app.
+:smile: = All good.
+:unicorn: Anyone's guess, not able to properly test but looks to be working great.
 
 The idea in this table is for a happy smiley face for the "testcase" to work how you'd expect. So say for example opening a file would have the natural expectation of the file just opening.
 
