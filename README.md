@@ -21,11 +21,12 @@ This project is a proof of concept (POC) to demonstrate IPFS over WebDAV. With t
 
 Legend:
 You see 2 smiles in each column. First smile: my webdav implementation. Second smile, the rclone webdav implementation.
-:angry: = Not working at all. No clear path to fix it either.
-:cry: = Works in specific condition or needs manual steps. See note for specific app.
-:smile: = All good.
-:unicorn: Anyone's guess, not able to properly test but looks to be working great.
-
+:angry: = Not working at all. No clear path to fix it either.\
+\
+:cry: = Works in specific condition or needs manual steps. See note for specific app.\
+:smile: = All good.\
+:unicorn: = Anyone's guess, not able to properly test but looks to be working great.\
+\
 The idea in this table is for a happy smiley face for the "testcase" to work how you'd expect. So say for example opening a file would have the natural expectation of the file just opening.
 
 Another example is file browsing. You'd expect you can browse to `/ipfs/<cid>`, and you'd be right when using the Dolphin file browser under KDE. But on Android and Windows it just doesn't work that way. The reason here is complicated. Say on Windows you want to browse to `/ipfs/<cid>`, you can if your `/ipfs` folder has that `<cid>` as subfolder. But you don't have that. You don't know which CID's you can browser in `/ipfs` thus windows (and Solid Explorer on android) just don't work. They don't know the child in the given parent. KDE's Dolphin simply doesn't care in this case and tries to open it regardless which is why it works there. For Windows and Android (Solid Explorer) you therefore have to specify the exact point you want to browse at the moment of making a WebDAV connection. So if you made a connection to `/ipfs/<cid_x>` and you then want to browse to `/ipfs/<cid_y>` then you have to edit your WebDAV connection to that new CID you want to browse.
