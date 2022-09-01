@@ -62,7 +62,7 @@ The application uses 2 environment variables:
 # Set to your IPFS API address. Like http://127.0.0.1:5001
 IPFS_API
 
-# n which port do you want this server to run? Default is 1900
+# Which port do you want this server to run? Default is 1900
 WEBDAV_PORT
 ```
 
