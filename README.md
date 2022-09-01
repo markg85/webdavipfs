@@ -9,6 +9,8 @@ This project is a proof of concept (POC) to demonstrate IPFS over WebDAV. With t
 5. There will be lots of bugs!
 
 ## Setting expectations
+The first smile in each column here is this implementation. The second smile in each column is the `rclone` WebDAV implementation. I took the rclone WebDAV implementation as example to see how well my implementation works (feature wise) when compared to a project that has had much more development time behind it.
+
 | *testcase* | Windows | Linux (KDE) | Android (Solid Explorer) |
 | ---------- | ------- | ----- | --------------- |
 | File opens |:cry::cry:|:cry::cry:|:smile::smile:|
@@ -19,25 +21,36 @@ This project is a proof of concept (POC) to demonstrate IPFS over WebDAV. With t
 | Copy |:cry::cry:|:smile::smile:|:smile::smile:|
 | Placeholder readme|:smile::smile:|:smile::smile:|:smile::smile:|
 
-Legend:
-You see 2 smiles in each column. First smile: my webdav implementation. Second smile, the rclone webdav implementation.
-:angry: = Not working at all. No clear path to fix it either.\
-\
-:cry: = Works in specific condition or needs manual steps. See note for specific app.\
-:smile: = All good.\
-:unicorn: = Anyone's guess, not able to properly test but looks to be working great.\
-\
+Legend: <br>
+:angry: = Not working at all. No clear path to fix it either.<br>
+:cry: = Works in specific condition or needs manual steps. See note for specific app.<br>
+:smile: = All good.<br>
+:unicorn: = Anyone's guess, not able to properly test but looks to be working great.<br>
+
 The idea in this table is for a happy smiley face for the "testcase" to work how you'd expect. So say for example opening a file would have the natural expectation of the file just opening.
 
-Another example is file browsing. You'd expect you can browse to `/ipfs/<cid>`, and you'd be right when using the Dolphin file browser under KDE. But on Android and Windows it just doesn't work that way. The reason here is complicated. Say on Windows you want to browse to `/ipfs/<cid>`, you can if your `/ipfs` folder has that `<cid>` as subfolder. But you don't have that. You don't know which CID's you can browser in `/ipfs` thus windows (and Solid Explorer on android) just don't work. They don't know the child in the given parent. KDE's Dolphin simply doesn't care in this case and tries to open it regardless which is why it works there. For Windows and Android (Solid Explorer) you therefore have to specify the exact point you want to browse at the moment of making a WebDAV connection. So if you made a connection to `/ipfs/<cid_x>` and you then want to browse to `/ipfs/<cid_y>` then you have to edit your WebDAV connection to that new CID you want to browse.
+Below is a description of each non-happy emoji in order of the above table with regards to the case I was testing.
 
+**File opens**
+The happy face would be that a file - any file - would open just like any file normally opens in your file browser. This turned out to not be the case in Windows and Linux. Windows has a 50MB file limit for anything in WebDAV. Opening any files below that side works "ok'ish". Opening files above 50MB just downright fails with no error or warning at all. Linux (at least KDE's Dolphin) doesn't have this size limitation. Both have the limitation that each file being openend is first downloaded (you don't get any feedback about that) and opens after the download is completed. That could take a long time!
+
+**Streaming**
+Streaming is much realted to file opening. Windows and linux both don't do that as they need to download the data as a whole before it starts playing. Android (Solid Explorer) has a sort of "Streaming service" that runs in the background. I assume it downloads the file you openend in chunks and handels it in those chunks too. Which kinda gives the user an experience of the file immediately playing however large it is. Your experience with Solid Explorer in this regard will feel like you have a native filesystem, which is greeat!
+
+**Browsing**
+You'd expect you can browse to `/ipfs/<cid>`, and you'd be right when using the Dolphin file browser under KDE. But on Android and Windows it just doesn't work that way. The reason here is complicated. Say on Windows you want to browse to `/ipfs/<cid>`, you can if your `/ipfs` folder has that `<cid>` as subfolder. But you don't have that. You don't know which CID's you can browser in `/ipfs` thus windows (and Solid Explorer on android) just don't work. They don't know the child in the given parent. KDE's Dolphin simply doesn't care in this case and tries to open it regardless which is why it works there. For Windows and Android (Solid Explorer) you therefore have to specify the exact point you want to browse at the moment of making a WebDAV connection. So if you made a connection to `/ipfs/<cid_x>` and you then want to browse to `/ipfs/<cid_y>` then you have to edit your WebDAV connection to that new CID you want to browse.
+
+**Metadata works**
+These are the file attributes that define how your file browser presents entries. For example, an entry with a folder type should be presented as a folder and not as a (for example) json file. This works fine for all tested environment.
+
+**Write prevents**
 Write prevents, i do have to specifically highlight these. WebDAV itself doesn't have an explicit read only mode. Therefore what i'm trying here isn't fully supported by WebDAV to begin with. Here the disclaimer of "There will be lots of bugs!" applies. Handling this gracefully is just an implementation detail i didn't bother to further implement.
 
+**Copy**
+On windows this experience is poor as you can again only interact with files that are within that 50MB limit. If you interact with anything larger (that includes copy) then it just doesn't work. The other testes environments work just fine here.
+
+**Placeholder readme**
 Placeholder readme, these are magical files that you will see on `/ipfs` and `/ipns`. These readme files are just stub single-line files to demonstrate that can be done too. If you're using Windows or Android you likely never see these ad you have to make a mapping there directly to `/ipfs/<cid>`.
-
-Lastly, the "Streaming" testcase. The way WebDAV implementation *mostly* work is by downloading a file you open before they actually open it. On windows you're limited to the WebDAV filesize limit which is 50MB (can be changed in the registry). On Dolpin it will open any file you click but will still download it first. Do note that this is entirely a lack of implementation details in the WebDAV for - in this case - Windows and KDE's Dolphin (KIO to be specific). In the case of Android (with Solid Explorer) things work really well. It magically supports streaming of files from the server meaning it does what you expect, it incrementally gets file chunks allowing you to actually open a file while it's being downloaded. If that file is a video for example then it would "sort of instantly" begin playing. Neat!
-
-With that i've set a bit of a mindset of what to expect and when a smile doesn't look happy.
 
 ## Requirements
 You need an IPFS node where you have access to the IPFS API (port 5001 by default). You cannot run this project without it.
@@ -73,7 +86,7 @@ This should give you an output like like: `WebDAV IPFS running on 127.0.0.1:1900
 ## Browsing your WebDAV folder
 I'm only going to mention KDE's dolphin here as anything else has it's own specific ways.
 
-In dolphin, edit the URL bar to say: `webdav://<webdav server>:1900/ipfs/<cid>`
+In Dolphin, edit the URL bar to say: `webdav://<webdav server>:1900/ipfs/<cid>`
 Depending on your distribution packages this might work. If your packages are in order then you should see a file/folder listing for your CID. Provided that the CID you filled in is a UnixFS folder tree (added to IPFS with `ipfs add -r <folder>`).
 
 ## Future development and contributing
