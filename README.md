@@ -31,25 +31,25 @@ The idea in this table is for a happy smiley face for the "testcase" to work how
 
 Below is a description of each non-happy emoji in order of the above table with regards to the case I was testing.
 
-**File opens**
+**File opens**<br>
 The happy face would be that a file - any file - would open just like any file normally opens in your file browser. This turned out to not be the case in Windows and Linux. Windows has a 50MB file limit for anything in WebDAV. Opening any files below that side works "ok'ish". Opening files above 50MB just downright fails with no error or warning at all. Linux (at least KDE's Dolphin) doesn't have this size limitation. Both have the limitation that each file being openend is first downloaded (you don't get any feedback about that) and opens after the download is completed. That could take a long time!
 
-**Streaming**
+**Streaming**<br>
 Streaming is much realted to file opening. Windows and linux both don't do that as they need to download the data as a whole before it starts playing. Android (Solid Explorer) has a sort of "Streaming service" that runs in the background. I assume it downloads the file you openend in chunks and handels it in those chunks too. Which kinda gives the user an experience of the file immediately playing however large it is. Your experience with Solid Explorer in this regard will feel like you have a native filesystem, which is greeat!
 
-**Browsing**
+**Browsing**<br>
 You'd expect you can browse to `/ipfs/<cid>`, and you'd be right when using the Dolphin file browser under KDE. But on Android and Windows it just doesn't work that way. The reason here is complicated. Say on Windows you want to browse to `/ipfs/<cid>`, you can if your `/ipfs` folder has that `<cid>` as subfolder. But you don't have that. You don't know which CID's you can browser in `/ipfs` thus windows (and Solid Explorer on android) just don't work. They don't know the child in the given parent. KDE's Dolphin simply doesn't care in this case and tries to open it regardless which is why it works there. For Windows and Android (Solid Explorer) you therefore have to specify the exact point you want to browse at the moment of making a WebDAV connection. So if you made a connection to `/ipfs/<cid_x>` and you then want to browse to `/ipfs/<cid_y>` then you have to edit your WebDAV connection to that new CID you want to browse.
 
-**Metadata works**
+**Metadata works**<br>
 These are the file attributes that define how your file browser presents entries. For example, an entry with a folder type should be presented as a folder and not as a (for example) json file. This works fine for all tested environment.
 
-**Write prevents**
+**Write prevents**<br>
 Write prevents, i do have to specifically highlight these. WebDAV itself doesn't have an explicit read only mode. Therefore what i'm trying here isn't fully supported by WebDAV to begin with. Here the disclaimer of "There will be lots of bugs!" applies. Handling this gracefully is just an implementation detail i didn't bother to further implement.
 
-**Copy**
+**Copy**<br>
 On windows this experience is poor as you can again only interact with files that are within that 50MB limit. If you interact with anything larger (that includes copy) then it just doesn't work. The other testes environments work just fine here.
 
-**Placeholder readme**
+**Placeholder readme**<br>
 Placeholder readme, these are magical files that you will see on `/ipfs` and `/ipns`. These readme files are just stub single-line files to demonstrate that can be done too. If you're using Windows or Android you likely never see these ad you have to make a mapping there directly to `/ipfs/<cid>`.
 
 ## Requirements
